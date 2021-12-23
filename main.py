@@ -5,16 +5,16 @@ if __name__ == "__main__":
     '''
     initialize demo
     '''
-    tester = Tester()
+    tester = Tester(level="DEBUG")
     test_file_class = True
 
     if test_file_class:
         '''
         File Class Demo
         '''
-        tester.time_start("File_Time")
+        tester.time_start("File_Runtime")
         # initialize File object using filename
-        f = File("Demo/temp.txt")
+        f = File("demo/temp.txt")
         # create the file
         f.create_file()
         create_exists = f.exists()
@@ -37,6 +37,6 @@ if __name__ == "__main__":
         tester.test("File.write_to_file", line_1, content_1)
         tester.test("File.append_to_file", line_2, content_2)
         tester.test("File.delete_file", delete_exists, False)
-        tester.time_end("File_Time")
+        tester.time_end("File_Runtime")
 
-    print(tester.tests)
+    tester.write_tests_report("diveboard_demo_report.txt")

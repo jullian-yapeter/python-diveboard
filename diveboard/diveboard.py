@@ -4,32 +4,79 @@ import time
 
 class Tester():
     def __init__(self, level="INFO"):
+        '''
+        Tester Class:
+        Contains functionality to easily test and profile code
+
+        params:
+        level [str] : the level at which to test the code
+        "DEBUG": Fine-grain progress reports
+        "INFO": Coarse-grain progress reports
+        "WARN": Potentially harmful situations
+        "ERROR": Harmful situations that are non-fatal
+        "FATAL": Sever errors; reason to abort
+
+        attr:
+        rank [dict] : the hierarchy of testing levels
+        tests [dict] : dictionary to track results of tests
+        '''
         self.level = level
+        self.rank = {"DEBUG": 0, "INFO": 1, "WARN": 2, "ERROR": 3, "FATAL": 4}
         self.tests = {}
 
     def test(self, test_label, actual, expected):
+        '''
+        compares actual and expected outputs. If a test with the same identifies is run multiple times, it
+        appends the results of each run to a list
+
+        params:
+        test_label [str] : a unique identifier for the test
+        actual [obj] : the actual output
+        expected [obj] : the expected output
+        '''
         if test_label not in self.tests:
             self.tests[test_label] = []
         if actual == expected:
             self.tests[test_label].append("PASS")
-            if self.level == "DEBUG":
-                print(f"{test_label}: PASS")
+            if self.rank[self.level] <= self.rank["DEBUG"]:
+                print(f"DEBUG: {test_label}: PASS")
         else:
             self.tests[test_label].append("FAIL")
-            if self.level == "DEBUG":
-                print(f"{test_label}: FAIL {actual} != {expected}")
+            if self.rank[self.level] <= self.rank["ERROR"]:
+                print(f"ERROR: {test_label}: FAIL\n actual: {actual}\n expected: {expected}")
 
     def time_start(self, test_label):
+        '''
+        starts a timer at any given point in the code and keeps track of it in the tests dict
+
+        params:
+        test_label [str] : a unique identifier for the test
+        '''
         self.tests[test_label] = {}
         self.tests[test_label]["start"] = time.time()
 
     def time_end(self, test_label):
+        '''
+        ends a timer at any given point in the code and keeps track of it in the tests dict
+
+        params:
+        test_label [str] : a unique identifier for the test, should be same as one used in time_start
+        '''
         if test_label not in self.tests or "start" not in self.tests[test_label]:
             raise Exception("TesterLabelNotFound", test_label)
         self.tests[test_label]["end"] = time.time()
         self.tests[test_label]["elap"] = self.tests[test_label]["end"] - self.tests[test_label]["start"]
-        if self.level == "DEBUG":
-            print(f"{test_label}: {self.tests[test_label]['elap']}s")
+        if self.rank[self.level] <= self.rank["DEBUG"]:
+            print(f"DEBUG: {test_label}: {self.tests[test_label]['elap']}s")
+
+    def write_tests_report(self, filename):
+        '''
+        write out a file containing the results of all the testing perfromed using this Tester object
+        '''
+        f = File(filename)
+        f.erase_file_content()
+        for k, v in self.tests.items():
+            f.append_to_file(f"{k}: {v}\n")
 
 
 class File():
@@ -91,6 +138,13 @@ class File():
         '''
         with open(self.filename, "a") as f:
             f.write(content)
+
+    def erase_file_content(self):
+        '''
+        overwrites the content of a file with an empty character
+        '''
+        with open(self.filename, "w") as f:
+            f.write("")
 
     def exists(self):
         return os.path.exists(self.filename)
