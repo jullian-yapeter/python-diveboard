@@ -107,11 +107,17 @@ class File():
         '''
         self.reader = open(self.filename, "r")
 
-    def read_line(self):
+    def read_line(self, delimiter=None):
         '''
         reads the next line in the file that has been opened
+
+        params:
+        delimiter [str] : the delimiter on which to split the read-in line
         '''
-        return self.reader.readline()
+        line = self.reader.readline()
+        if delimiter is None:
+            return line
+        return line.split(delimiter)
 
     def close_reader(self):
         '''
