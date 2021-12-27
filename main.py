@@ -1,4 +1,4 @@
-from diveboard.diveboard import File, Tester
+from diveboard.diveboard import Tester, File, Image
 
 
 if __name__ == "__main__":
@@ -7,6 +7,7 @@ if __name__ == "__main__":
     '''
     tester = Tester(level="DEBUG")
     test_file_class = True
+    test_image_class = True
 
     if test_file_class:
         '''
@@ -33,12 +34,34 @@ if __name__ == "__main__":
         # delete file
         f.delete_file()
         delete_exists = f.exists()
+        tester.time_end("File_Runtime")
 
         tester.test("File.create_file", create_exists, True)
         tester.test("File.write_to_file", line_1, content_1)
         tester.test("File.append_to_file_1", line_2_split[0], content_2_split[0])
         tester.test("File.append_to_file_2", line_2_split[1], content_2_split[1])
         tester.test("File.delete_file", delete_exists, False)
-        tester.time_end("File_Runtime")
+
+    if test_image_class:
+        '''
+        Image Class Demo
+        '''
+        tester.time_start("Image_Runtime")
+        # initialize Image object using filename
+        try:
+            i = Image("demo/test.jpg", color=1)
+            init_test = True
+        except Exception:
+            init_test = False
+        # Show the read-in image
+        try:
+            i.show_image()
+            show_test = True
+        except Exception:
+            show_test = False
+        tester.time_end("Image_Runtime")
+
+        tester.test("Image.__init__", init_test, True)
+        tester.test("Image.show_image", show_test, True)
 
     tester.write_tests_report("diveboard_demo_report.txt")

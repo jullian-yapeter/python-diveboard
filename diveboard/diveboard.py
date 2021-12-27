@@ -1,6 +1,8 @@
 import os
 import time
 
+import cv2
+
 
 class Tester():
     def __init__(self, level="INFO"):
@@ -160,3 +162,38 @@ class File():
             os.remove(self.filename)
         else:
             print(f"File.delete_file({self.filename}): The file does not exist")
+
+
+class Image():
+    def __init__(self, filename, color=1):
+        '''
+        Image Class:
+        Contains functionality to work with images and perform basic processing
+
+        attr:
+        image []
+
+        params:
+        filename [str] : the filename of the image file
+        color [int] : 1 for 3-channel color images, 0 for 1-channel grayscale images
+        '''
+        self.filename = filename
+        self.image = self._read_image(color)
+        print(type(self.image))
+
+    def _read_image(self, color):
+        '''
+        reads in the image into the attribute
+        '''
+        try:
+            return cv2.imread(self.filename, color)
+        except Exception as e:
+            print(f"Image._read_image({self.filename}): Unable to read in image, {e}")
+
+    def show_image(self, window_name="image"):
+        '''
+        show the read-in image
+        '''
+        cv2.imshow(window_name, self.image)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
