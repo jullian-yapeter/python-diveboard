@@ -60,11 +60,11 @@ if __name__ == "__main__":
         except Exception:
             show_test = False
         # resize the image
-        im_resized = i.resize_image((20, 20))
+        i_resized = i.resize_image((20, 20))
         tester.time_end("Image_Runtime")
 
         tester.test("Image.__init__", init_test, True)
         tester.test("Image.show_image", show_test, True)
-        tester.test("Image.resize_image", im_resized.shape, (20, 20, 3))
+        tester.test("Image.resize_image", i_resized.image.shape, (20, 20, 3))
 
     tester.write_tests_report("diveboard_demo_report.txt")

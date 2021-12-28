@@ -1,6 +1,7 @@
 import os
 import time
 
+import numpy as np
 import cv2
 
 
@@ -165,7 +166,7 @@ class File():
 
 
 class Image():
-    def __init__(self, filename, color=1):
+    def __init__(self, template, color=1):
         '''
         Image Class:
         Contains functionality to work with images and perform basic processing
@@ -177,8 +178,14 @@ class Image():
         filename [str] : the filename of the image file
         color [int] : 1 for 3-channel color images, 0 for 1-channel grayscale images
         '''
-        self.filename = filename
-        self.image = self._read_image(color)
+        if type(template) == str:
+            self.filename = template
+            self.image = self._read_image(color)
+        elif type(template) == np.ndarray:
+            self.image = template
+        else:
+            raise Exception("ImageInputError",
+                            "Input template is of an invalid type: input filename [str] or image [numpy.ndarray]")
 
     def _read_image(self, color):
         '''
@@ -192,6 +199,10 @@ class Image():
     def show_image(self, window_name="image", milliseconds=None):
         '''
         show the read-in image
+
+        params:
+        window_name [str] : name of the window in which the image will be displayed
+        milliseconds [int] : milliseconds for which to display the image; if None, show until a key is pressed
         '''
         cv2.imshow(window_name, self.image)
         if milliseconds is not None:
@@ -203,5 +214,8 @@ class Image():
     def resize_image(self, dims):
         '''
         resize the image to the given dimensions
+
+        params:
+        dims [(int, int)] : the (height, width) to resize the image to
         '''
-        return cv2.resize(self.image, dims)
+        return Image(cv2.resize(self.image, dims))
