@@ -171,7 +171,7 @@ class Image():
         Contains functionality to work with images and perform basic processing
 
         attr:
-        image []
+        image [numpy.ndarray] : read-in image represented as numpy array
 
         params:
         filename [str] : the filename of the image file
@@ -179,7 +179,6 @@ class Image():
         '''
         self.filename = filename
         self.image = self._read_image(color)
-        print(type(self.image))
 
     def _read_image(self, color):
         '''
@@ -190,10 +189,19 @@ class Image():
         except Exception as e:
             print(f"Image._read_image({self.filename}): Unable to read in image, {e}")
 
-    def show_image(self, window_name="image"):
+    def show_image(self, window_name="image", milliseconds=None):
         '''
         show the read-in image
         '''
         cv2.imshow(window_name, self.image)
-        cv2.waitKey(0)
+        if milliseconds is not None:
+            cv2.waitKey(milliseconds)
+        else:
+            cv2.waitKey(0)
         cv2.destroyAllWindows()
+
+    def resize_image(self, dims):
+        '''
+        resize the image to the given dimensions
+        '''
+        return cv2.resize(self.image, dims)
