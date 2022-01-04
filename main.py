@@ -1,4 +1,5 @@
 from diveboard.diveboard import Tester, File, Image
+from demo import demo_material as dm
 
 
 if __name__ == "__main__":
@@ -61,10 +62,15 @@ if __name__ == "__main__":
             show_test = False
         # resize the image
         i_resized = i.resize_image((20, 20))
+        # test optical character recognition
+        i = Image("demo/ocr_test.png", color=1)
+        ocr_result = i.ocr()
+        ocr_result = ocr_result.replace("\n", "")
         tester.time_end("Image_Runtime")
 
         tester.test("Image.__init__", init_test, True)
         tester.test("Image.show_image", show_test, True)
         tester.test("Image.resize_image", i_resized.image.shape, (20, 20, 3))
+        tester.test("Image.ocr", dm.expected_ocr in ocr_result, True)
 
     tester.write_tests_report("diveboard_demo_report.txt")

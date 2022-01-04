@@ -3,6 +3,7 @@ import time
 
 import numpy as np
 import cv2
+import pytesseract
 
 
 class Tester():
@@ -190,6 +191,9 @@ class Image():
     def _read_image(self, color):
         '''
         reads in the image into the attribute
+
+        params:
+        color [int] : 1 for 3-channel color images, 0 for 1-channel grayscale images
         '''
         try:
             return cv2.imread(self.filename, color)
@@ -219,3 +223,9 @@ class Image():
         dims [(int, int)] : the (height, width) to resize the image to
         '''
         return Image(cv2.resize(self.image, dims))
+
+    def ocr(self):
+        '''
+        performs ocr on a given image and returns detected string
+        '''
+        return pytesseract.image_to_string(self.image)
